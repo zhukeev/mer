@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>31929872444-jsvt4el0090g8217025ifm7dveu7ua0g.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.31929872444-jsvt4el0090g8217025ifm7dveu7ua0g</string>
+	<key>API_KEY</key>
+	<string>AIzaSyA-o3cufOsUz4dWTnLohcm4AYM65LZDx5U</string>
+	<key>GCM_SENDER_ID</key>
+	<string>31929872444</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.mer</string>
+	<key>PROJECT_ID</key>
+	<string>meri-4100f</string>
+	<key>STORAGE_BUCKET</key>
+	<string>meri-4100f.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:31929872444:ios:2a65a6b2c8f357ac389339</string>
+	<key>DATABASE_URL</key>
+	<string>https://meri-4100f.firebaseio.com</string>
+</dict>
+</plist>

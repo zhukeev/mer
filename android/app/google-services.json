@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "31929872444",
+    "firebase_url": "https://meri-4100f.firebaseio.com",
+    "project_id": "meri-4100f",
+    "storage_bucket": "meri-4100f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:31929872444:android:3dd23fea955eca3b389339",
+        "android_client_info": {
+          "package_name": "com.example.mer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "31929872444-rba58c1um57nrh45bsdnps83j0f946o0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mer",
+            "certificate_hash": "cf08e50a6e2650dd42ade2e1341e576261c6f616"
+          }
+        },
+        {
+          "client_id": "31929872444-ktprojqj1jkjs63h9ctdk9kmaq8r0hgq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrIztYfy7zgZA8NccV2FtUs8Z-JgzQPfc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "31929872444-ktprojqj1jkjs63h9ctdk9kmaq8r0hgq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "31929872444-jsvt4el0090g8217025ifm7dveu7ua0g.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mer"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

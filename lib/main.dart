@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:location/location.dart';
+import 'package:mer/sign_up_page.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import 'dart:convert' show json;
@@ -15,14 +17,19 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return
+        NeumorphicApp(
+
+        );
+
+      MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: SignUpPage() /*MyHomePage(title: 'Flutter Demo Home Page')*/,
     );
   }
 }

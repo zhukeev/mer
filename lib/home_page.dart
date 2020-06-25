@@ -1,104 +1,147 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:neumorphic/neumorphic.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mer/google_sign_in_service.dart';
+import 'package:mer/new_request_page.dart';
+import 'package:mer/sign_in_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  final List<String> menuItems = [
-    'Все заказы',
-    'Новый заказ',
-    'Погрузка',
-    'Выгрузка',
-    'Местоположение',
-    'Нет местоположения',
-    'Документ загружен',
-    'Будет доставлен через сутки'
-  ];
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
+  TabController _tabController;
 
-  String selectedMenu = 'Все заказы';
+  @override
+  void initState() {
+    _tabController = TabController(length: 2, vsync: this);
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final dark = NeumorphicTheme.of(context).isUsingDark;
+
     return Scaffold(
-      appBar: AppBar(
+      backgroundColor: NeumorphicTheme.baseColor(context),
+      appBar: NeumorphicAppBar(
         centerTitle: true,
         title: Text('Главная'),
         actions: <Widget>[
           PopupMenuButton<String>(
-              icon: Icon(Icons.sort),
-              initialValue: selectedMenu,
-              onSelected: (selected) {
-                setState(() {
-                  selectedMenu = selected;
-                });
+            onSelected: (val) async {
+              switch (val) {
+                case 'Выйти':
+                  {
+                    GoogleSignInService s = GoogleSignInService(
+                        account: (GoogleSignInAccount value) {});
 
-                print('selected $selected');
-              },
-              itemBuilder: (context) {
-                return menuItems.map((item) {
-                  return PopupMenuItem<String>(
-                    child: Text(
-                      item,
-                      style: TextStyle(
-                          fontWeight:
-                              item == selectedMenu ? FontWeight.bold : null),
-                    ),
-                    value: item,
-                  );
-                }).toList();
-              }),
+                    await s.signOut();
+
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (_) => SignInPage()));
+                  }
+
+                  break;
+                case 'О программе':
+                  break;
+              }
+
+              print(val);
+            },
+            itemBuilder: (BuildContext context) {
+              return {'Включить темную тему', 'О программе', 'Выйти'}
+                  .map((String choice) {
+                return choice == 'Включить темную тему'
+                    ? PopupMenuItem<String>(
+                        value: choice,
+                        child: SwitchListTile(
+                            value: dark,
+                            onChanged: (val) {
+                              setState(() {
+                                NeumorphicTheme.of(context).themeMode =
+                                    !val ? ThemeMode.light : ThemeMode.dark;
+                              });
+                            }))
+                    : PopupMenuItem<String>(
+                        value: choice,
+                        child: Text(choice),
+                      );
+              }).toList();
+            },
+          ),
         ],
       ),
-      body: SafeArea(
-        child: ListView.builder(
-            itemCount: 30,
-            shrinkWrap: true,
-            itemBuilder: (context, i) {
-              return GestureDetector(
-                onLongPress: () {
-                  HapticFeedback.vibrate();
+      body: Column(
+        children: <Widget>[
+          TabBar(controller: _tabController, tabs: [
+            new Tab(
+                icon: new Icon(
+                  FontAwesomeIcons.fileUpload,
+//                  color: Theme.of(context).textTheme.caption.color,
+                ),
+                text: 'Мои заявки'),
+            new Tab(
+                icon: new Icon(
+                  Icons.assignment,
+//                  color: Theme.of(context).textTheme.caption.color,
+                ),
+                text: 'Заявки'),
+          ]),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                Stack(
+                  children: <Widget>[
+                    Hero(
+                      tag: 'assets/images/bishkek.svg',
+                      child: SvgPicture.asset('assets/images/bishkek.svg',
+                          allowDrawingOutsideViewBox: true, height: 120),
+                    ),
+                    ListView.builder(
+                        itemCount: 30,
+                        shrinkWrap: true,
+                        itemBuilder: (context, i) {
+                          return GestureDetector(
+                            onLongPress: () {
+                              HapticFeedback.vibrate();
 
-                  showSnackbar(context);
-                },
-                child: NeuCard(
-                    padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
-                    margin: const EdgeInsets.only(top: 16, left: 16, right: 16),
-//                      margin: const EdgeInsets.all(16),
-                    decoration: NeumorphicDecoration(
-                        borderRadius: BorderRadius.circular(5)),
-                    curveType: CurveType.flat,
-                    child: Container(
-                      margin: const EdgeInsets.all(8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'Заказ №9379992 будет доставлен через сутки',
-                            style: TextStyle(
-                                color: Colors.redAccent,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Icon(
-                                Icons.location_on,
-                                color: Colors.grey,
-                              ),
-                              Text(
-                                '2623 Railroad St Orange, Kansas 78577 ',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    )),
-              );
-            }),
+                              showSnackbar(context);
+                            },
+                            child: Container(),
+                          );
+                        }),
+                  ],
+                ),
+                ListView.builder(
+                    itemCount: 30,
+                    shrinkWrap: true,
+                    itemBuilder: (context, i) {
+                      return GestureDetector(
+                        onLongPress: () {
+                          HapticFeedback.vibrate();
+
+                          showSnackbar(context);
+                        },
+                        child: Container(),
+                      );
+                    }),
+              ],
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => NewRequestPage())),
+        child: Icon(Icons.add),
       ),
     );
   }

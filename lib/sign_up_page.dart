@@ -1,105 +1,273 @@
 import 'package:flutter/material.dart';
-import 'package:neumorphic/neumorphic.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intl/intl.dart';
+import 'package:mer/custom_radio_form.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
   _SignUpPageState createState() => _SignUpPageState();
 }
 
+enum ScreenMode { SignIn, SignUp }
+
 class _SignUpPageState extends State<SignUpPage> {
   final FocusNode _passwordFocus = FocusNode();
 
   var _hasInternetConnection = false;
 
-  TextEditingController _emailController = TextEditingController();
+  TextEditingController _signInEmailController = TextEditingController();
+  TextEditingController _signInPasswordController = TextEditingController();
 
-  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _signUpFirstnameController = TextEditingController();
+  TextEditingController _signUpLastnameController = TextEditingController();
+  TextEditingController _signUpDOBController = TextEditingController();
+  TextEditingController _signUpEmailController = TextEditingController();
+  TextEditingController _signUpPasswordController = TextEditingController();
+
+  ScreenMode screenMode = ScreenMode.SignIn;
+
+  TextStyle inactiveSignCaption;
+  TextStyle activeSignCaption;
+
+  String gender;
+
+  GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: <String>[
+      'email',
+    ],
+  );
+
+  GoogleSignInAccount _currentUser;
+
+  final signUpFormState = GlobalKey<FormState>();
+
+  changeScreen(ScreenMode mode) {
+    print(mode);
+    print(screenMode);
+    setState(() {
+      screenMode = mode;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    final bool isDark = NeumorphicTheme.of(context).isUsingDark;
+
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: isDark ? Brightness.light : Brightness.dark,
+      statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+    ));
+
+    inactiveSignCaption = TextStyle(
+        color: isDark
+            ? NeumorphicTheme.currentTheme(context).shadowLightColorEmboss
+            : NeumorphicTheme.currentTheme(context).shadowDarkColorEmboss,
+        fontSize: 20,
+        fontWeight: FontWeight.bold);
+    activeSignCaption = TextStyle(fontSize: 24, fontWeight: FontWeight.bold);
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          /*Align(
-              alignment: const Alignment(0, -0.8),
-              child: SvgPicture.asset(
-                'assets/images/bishkek.svg',
-                allowDrawingOutsideViewBox: true,
-                height: 120,
-              )),*/
-          Align(
-              alignment: const Alignment(0.0, -0.8),
-              child: NeuCard(
-                color: Colors.white,
-                width: 300,
-                height: 200,
-                margin: const EdgeInsets.symmetric(horizontal: 16),
-                decoration: NeumorphicDecoration(
-                    borderRadius: BorderRadius.circular(20)),
-              )),
-          Align(
-              alignment: const Alignment(0.0, 0.3),
-              child: NeuCard(
-                  curveType: CurveType.flat,
-                  color: Colors.amber,
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: NeumorphicDecoration(
-                      borderRadius: BorderRadius.circular(20)),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      SizedBox(height: 16),
-                      Center(
-                          child: const Text('Авторизация',
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20))),
-                      SizedBox(height: 16),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: TextField(
-                          controller: _emailController,
-                          textInputAction: TextInputAction.next,
-                          keyboardType: TextInputType.emailAddress,
-                          onSubmitted: (str) => FocusScope.of(context)
-                              .requestFocus(_passwordFocus),
-                          decoration: InputDecoration(
-                            errorText: null,
-                            labelText: 'Email',
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: TextField(
-                          obscureText: true,
-                          controller: _passwordController,
-                          focusNode: _passwordFocus,
-                          decoration: InputDecoration(
-                              errorText: null, labelText: "Пароль"),
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Container(
-                            width: double.infinity,
-                            height: 60,
-                            decoration: BoxDecoration(boxShadow: [
-                              const BoxShadow(
-                                  color: Colors.black54,
-                                  offset: Offset(0, 5),
-                                  blurRadius: 8)
-                            ], borderRadius: BorderRadius.circular(5)),
-                            child: NeuButton(
-                              child: Text('Авторизоваться'),
-                              onPressed: () {},
-                            )),
-                      ),
-                      SizedBox(height: 16),
-                    ],
-                  ))),
-        ],
+      backgroundColor: NeumorphicTheme.baseColor(context),
+      appBar: NeumorphicAppBar(
+        centerTitle: true,
+        title: Text('Регистрация'),
       ),
+      body: buildSignUp(context),
+    );
+  }
+
+  Widget buildSignUp(BuildContext context) {
+    return Form(
+      key: signUpFormState,
+      child: SingleChildScrollView(
+        child: Neumorphic(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          margin: const EdgeInsets.all( 16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Neumorphic(
+                child: TextFormField(
+                  controller: _signUpFirstnameController,
+                  validator: (val) => val.isEmpty ? 'Обязательное поле' : null,
+                  decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.person_outline), labelText: "Имя"),
+                ),
+              ),
+              SizedBox(height: 8),
+              Neumorphic(
+                child: TextFormField(
+                  controller: _signUpLastnameController,
+                  validator: (val) => val.isEmpty ? 'Обязательное поле' : null,
+                  decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.person_outline),
+                      labelText: "Фамилия"),
+                ),
+              ),
+              SizedBox(height: 8),
+              Neumorphic(
+                child: TextFormField(
+                  readOnly: true,
+                  onTap: () async {
+                    final date = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate:
+                            DateTime.now().subtract(Duration(days: 60 * 365)),
+                        lastDate: DateTime.now().add(Duration(days: 1)));
+
+                    if (date != null) {
+                      _signUpDOBController.text =
+                          DateFormat('dd.MM.yyyy').format(date);
+                    }
+                  },
+                  controller: _signUpDOBController,
+                  validator: (val) => val.isEmpty ? 'Обязательное поле' : null,
+                  decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.today),
+                      labelText: "Дата рождения"),
+                ),
+              ),
+              SizedBox(height: 8),
+              GenderPickerForm(
+                color: inactiveSignCaption.color,
+                validator: (gender) => gender == null ? 'Выберите пол' : null,
+              ),
+              SizedBox(height: 8),
+              Neumorphic(
+                  child: TextFormField(
+                controller: _signUpEmailController,
+                validator: (val) => val.isEmpty ? 'Обязательное поле' : null,
+                textInputAction: TextInputAction.next,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.alternate_email),
+                    labelText: 'Email'),
+              )),
+              SizedBox(height: 8),
+              Neumorphic(
+                  child: TextFormField(
+                controller: _signUpPasswordController,
+                validator: (val) => val.isEmpty ? 'Обязательное поле' : null,
+                textInputAction: TextInputAction.next,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.lock), labelText: 'Пароль'),
+              )),
+              SizedBox(height: 8),
+              Neumorphic(
+                  child: TextFormField(
+                validator: (val) => val != _signUpPasswordController.text
+                    ? 'Пароли не совпадают'
+                    : null,
+                textInputAction: TextInputAction.next,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.lock),
+                    labelText: 'Повторите пароль'),
+              )),
+              SizedBox(height: 8),
+              SizedBox(
+                width: double.maxFinite,
+                height: 56,
+                child: NeumorphicButton(
+                  child: Center(
+                    child:
+                        Text('Зарегистрироваться', textAlign: TextAlign.center),
+                  ),
+                  onPressed: () {
+                    signUpFormState.currentState.validate();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+}
+
+
+class _GenderField extends StatelessWidget {
+  final Gender gender;
+  final ValueChanged<Gender> onChanged;
+
+  const _GenderField({
+    @required this.gender,
+    @required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8),
+          child: Text(
+            "Gender",
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              color: NeumorphicTheme.defaultTextColor(context),
+            ),
+          ),
+        ),
+        Row(
+          children: <Widget>[
+            SizedBox(width: 12),
+            NeumorphicRadio(
+              groupValue: this.gender,
+              padding: EdgeInsets.all(20),
+              style: NeumorphicRadioStyle(
+                boxShape: NeumorphicBoxShape.circle(),
+              ),
+              value: Gender.MALE,
+              child: Icon(Icons.account_box),
+              onChanged: (value) => this.onChanged(value),
+            ),
+            SizedBox(width: 12),
+            NeumorphicRadio(
+              groupValue: this.gender,
+              padding: EdgeInsets.all(20),
+              style: NeumorphicRadioStyle(
+                boxShape: NeumorphicBoxShape.circle(),
+              ),
+              value: Gender.FEMALE,
+              child: Icon(Icons.pregnant_woman),
+              onChanged: (value) => this.onChanged(value),
+            ),
+            SizedBox(width: 12),
+            NeumorphicRadio(
+              groupValue: this.gender,
+              padding: EdgeInsets.all(20),
+              style: NeumorphicRadioStyle(
+                boxShape: NeumorphicBoxShape.circle(),
+              ),
+              value: Gender.NON_BINARY,
+              child: Icon(Icons.supervised_user_circle),
+              onChanged: (value) => this.onChanged(value),
+            ),
+            SizedBox(
+              width: 18,
+            )
+          ],
+        ),
+      ],
     );
   }
 }

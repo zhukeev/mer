@@ -1,52 +1,83 @@
 import 'dart:async';
-import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 
 class PlacePickerPage extends StatefulWidget {
+  final LatLng latLng;
+
+  PlacePickerPage({this.latLng});
+
   @override
   _PlacePickerPageState createState() => _PlacePickerPageState();
 }
 
 class _PlacePickerPageState extends State<PlacePickerPage> {
   Completer<GoogleMapController> _controller = Completer();
+  LatLng latLng;
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
+  final appbar = NeumorphicAppBar(
+    centerTitle: true,
+    title: Text('Заявка'),
   );
 
-  static final CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
+  @override
+  void initState() {
+    if (widget.latLng != null && widget.latLng is LatLng) {
+      latLng = widget.latLng;
+    } else {
+      new Location()
+          .getLocation()
+          .then((value) => latLng = LatLng(value.latitude, value.longitude));
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:  NeumorphicTheme.baseColor(context),
-      appBar: NeumorphicAppBar(
+      backgroundColor: NeumorphicTheme.baseColor(context),
+      /* appBar: NeumorphicAppBar(
         centerTitle: true,
         title: Text('Заявка'),
-      ),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: GoogleMap(
-              mapType: MapType.hybrid,
-              initialCameraPosition: _kGooglePlex,
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-              },
+      ),*/
+      body: SafeArea(
+        child: Stack(
+          children: <Widget>[
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height - kToolbarHeight,
+                child: GoogleMap(
+                  mapType: MapType.hybrid,
+                  padding: const EdgeInsets.all(32),
+                  myLocationButtonEnabled: true,
+                  onTap: (latLng) => Navigator.of(context).pop(latLng),
+                  myLocationEnabled: true,
+                  initialCameraPosition: CameraPosition(
+                      target: latLng ?? LatLng(42.8767897, 74.4517753)),
+                  onMapCreated: (GoogleMapController controller) {
+                    _controller.complete(controller);
+                  },
+                ),
+              ),
             ),
-          ),
-
-        ],
+            SizedBox(
+              height: appbar.preferredSize.height * 1.2,
+              child: NeumorphicAppBar(
+                centerTitle: true,
+                color: Colors.transparent,
+                title: Text(
+                  'Выберите место',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

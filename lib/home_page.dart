@@ -7,6 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mer/google_sign_in_service.dart';
 import 'package:mer/new_request_page.dart';
 import 'package:mer/sign_in_page.dart';
+import 'package:mer/statistic_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -37,6 +38,10 @@ class _HomePageState extends State<HomePage>
           PopupMenuButton<String>(
             onSelected: (val) async {
               switch (val) {
+                case 'Статистика':
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (_) => StatisticPage()));
+                  break;
                 case 'Выйти':
                   {
                     GoogleSignInService s = GoogleSignInService(
@@ -56,8 +61,12 @@ class _HomePageState extends State<HomePage>
               print(val);
             },
             itemBuilder: (BuildContext context) {
-              return {'Включить темную тему', 'О программе', 'Выйти'}
-                  .map((String choice) {
+              return {
+                'Включить темную тему',
+                'Статистика',
+                'О программе',
+                'Выйти'
+              }.map((String choice) {
                 return choice == 'Включить темную тему'
                     ? PopupMenuItem<String>(
                         value: choice,

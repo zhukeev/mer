@@ -84,9 +84,10 @@ class MyApp extends StatelessWidget {
       theme: NeumorphicThemeData(
           baseColor: Color(0xFFFFFFFF),
           lightSource: LightSource.topLeft,
+          intensity: .5,
           iconTheme: IconThemeData(color: Colors.grey.shade700),
           textTheme: ThemeData.light().textTheme..subtitle1.apply(color: Colors.red),
-          depth: 10),
+          depth: 5),
       darkTheme: NeumorphicThemeData(
           baseColor: Color(0xFF161616),
           lightSource: LightSource.topLeft,

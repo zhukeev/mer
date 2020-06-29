@@ -61,19 +61,39 @@ class _NewRequestPageState extends State<NewRequestPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: NeumorphicTheme.baseColor(context),
+      backgroundColor: NeumorphicColors.background,
       appBar: NeumorphicAppBar(
+        buttonStyle: NeumorphicStyle(
+            shape: NeumorphicShape.convex
+        ),
         centerTitle: true,
         title: Text('Заявка'),
       ),
       body: SingleChildScrollView(
         child: Container(
-          padding: const EdgeInsets.all(8),
-          margin: const EdgeInsets.all(8),
+          padding: const EdgeInsets.only(bottom: 16),
           child: Column(
             children: <Widget>[
               Neumorphic(
+                margin: const EdgeInsets.only(bottom: 8, right: 16, left: 16),
                 padding: const EdgeInsets.all(8),
+                style: NeumorphicStyle(shape: NeumorphicShape.convex),
+                child: TextFormField(
+                  controller: descriptionTEC,
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  minLines: 3,
+                  maxLength: 200,
+                  validator: (val) => val.isEmpty ? 'Обязательное поле' : null,
+                  decoration: InputDecoration(labelText: 'Описание'),
+                ),
+              ),
+              SizedBox(height: 8),
+              Neumorphic(
+                margin: const EdgeInsets.only(bottom: 8, right: 16, left: 16),
+                padding: const EdgeInsets.all(8),
+                style: NeumorphicStyle(shape: NeumorphicShape.convex),
                 child: Stack(
                   children: <Widget>[
                     TextFormField(
@@ -144,64 +164,51 @@ class _NewRequestPageState extends State<NewRequestPage> {
                 ),
               ),
               SizedBox(height: 8),
-              Neumorphic(
-                padding: const EdgeInsets.all(8),
-                child: TextFormField(
-                  controller: descriptionTEC,
-                  textInputAction: TextInputAction.next,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  maxLength: 200,
-                  validator: (val) => val.isEmpty ? 'Обязательное поле' : null,
-                  decoration: InputDecoration(labelText: 'Описание'),
-                ),
-              ),
-              SizedBox(height: 8),
-              Neumorphic(
-                child: GridView.builder(
-                  itemCount: 4,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (BuildContext context, int index) {
-                    final isOdd = index % 2 == 0;
-                    return GestureDetector(
-                      onTap: () async {
-                        final f = await getImage();
-                        if (f != null) {
-                          _images[index] = f;
-                          setState(() {});
-                        }
-                      },
-                      child: Neumorphic(
-                        margin: EdgeInsets.only(
-                            left: isOdd ? 0 : 4,
-                            right: isOdd ? 4 : 0,
-                            bottom: 8),
-                        padding: EdgeInsets.only(
-                            left: isOdd ? 0 : 4,
-                            right: isOdd ? 4 : 0,
-                            bottom: 8),
-                        child: Container(
-//                      color: Color(0xFF363636),
-                          child: _images.containsKey(index)
-                              ? Image.file(
-                                  _images[index],
-                                  fit: BoxFit.cover,
-                                )
-                              : Center(child: Icon(Icons.photo)),
-                        ),
+              GridView.builder(
+                itemCount: 4,
+                shrinkWrap: true,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                physics: NeverScrollableScrollPhysics(),
+                itemBuilder: (BuildContext context, int index) {
+                  final isOdd = index % 2 == 0;
+                  return GestureDetector(
+                    onTap: () async {
+                      final f = await getImage();
+                      if (f != null) {
+                        _images[index] = f;
+                        setState(() {});
+                      }
+                    },
+                    child: Neumorphic(
+                      style: NeumorphicStyle(
+                        shape: NeumorphicShape.convex
                       ),
-                    );
-                  },
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2),
-                ),
+                      margin: EdgeInsets.only(
+                          left: isOdd ? 0 : 4, right: isOdd ? 4 : 0, bottom: 8),
+                      child: Container(
+//                      color: Color(0xFF363636),
+                        child: _images.containsKey(index)
+                            ? Image.file(
+                                _images[index],
+                                fit: BoxFit.cover,
+                              )
+                            : Center(child: Icon(Icons.photo)),
+                      ),
+                    ),
+                  );
+                },
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2),
               ),
               SizedBox(height: 16),
               SizedBox(
                 width: double.maxFinite,
                 height: 56,
                 child: NeumorphicButton(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  style: NeumorphicStyle(
+                      shape: NeumorphicShape.convex
+                  ),
                   child: Center(
                     child: Text('Отправить', textAlign: TextAlign.center),
                   ),
@@ -241,36 +248,36 @@ class _NewRequestPageState extends State<NewRequestPage> {
 
     final source = await showDialog(
         context: context,
-        builder: (_) => Dialog(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          IconButton(
-                              icon: Icon(Icons.camera_alt),
-                              onPressed: () {
-                                Navigator.of(context).pop(ImageSource.camera);
-                              }),
-                          Text('Камера')
-                        ],
-                      ),
-                      Column(
-                        children: <Widget>[
-                          IconButton(
-                              icon: Icon(Icons.photo),
-                              onPressed: () {
-                                Navigator.of(context).pop(ImageSource.gallery);
-                              }),
-                          Text('Галерея'),
-                        ],
-                      ),
-                    ],
-                  )
-                ],
+        builder: (_) => AlertDialog(
+              content: SizedBox(
+                width: 80,
+                height: 80,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Column(
+                      children: <Widget>[
+                        IconButton(
+                            icon: Icon(Icons.camera_alt),
+                            onPressed: () {
+                              Navigator.of(context).pop(ImageSource.camera);
+                            }),
+                        Text('Камера')
+                      ],
+                    ),
+                    Column(
+                      children: <Widget>[
+                        IconButton(
+                            icon: Icon(Icons.photo),
+                            onPressed: () {
+                              Navigator.of(context).pop(ImageSource.gallery);
+                            }),
+                        Text('Галерея'),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ));
 

@@ -1,9 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intl/intl.dart';
 import 'package:mer/google_sign_in_service.dart';
 import 'package:mer/new_request_page.dart';
 import 'package:mer/sign_in_page.dart';
@@ -89,34 +91,38 @@ class _HomePageState extends State<HomePage>
       ),
       body: Column(
         children: <Widget>[
-          TabBar(controller: _tabController, tabs: [
-            new Tab(
-                icon: new Icon(
-                  FontAwesomeIcons.fileUpload,
-//                  color: Theme.of(context).textTheme.caption.color,
-                ),
-                text: 'Мои заявки'),
-            new Tab(
-                icon: new Icon(
-                  Icons.assignment,
-//                  color: Theme.of(context).textTheme.caption.color,
-                ),
-                text: 'Заявки'),
-          ]),
+          TabBar(
+              labelColor: Theme.of(context).textTheme.caption.color,
+              controller: _tabController,
+              tabs: [
+                new Tab(
+                    icon: new Icon(FontAwesomeIcons.fileUpload),
+                    text: 'Мои заявки'),
+                new Tab(icon: new Icon(Icons.assignment), text: 'Заявки'),
+              ]),
           Expanded(
             child: TabBarView(
               controller: _tabController,
               children: [
                 Stack(
                   children: <Widget>[
-                    Hero(
-                      tag: 'assets/images/bishkek.svg',
-                      child: SvgPicture.asset('assets/images/bishkek.svg',
-                          allowDrawingOutsideViewBox: true, height: 120),
-                    ),
+                    /*Opacity(
+                      opacity: 0.5,
+                      child: SizedBox.expand(
+                        child: Hero(
+                          tag: 'assets/images/bishkek.svg',
+                          child: SvgPicture.asset('assets/images/bishkek.svg',
+                              colorBlendMode: BlendMode.color,
+                              allowDrawingOutsideViewBox: true,
+                              height: 120),
+                        ),
+                      ),
+                    ),*/
                     ListView.builder(
                         itemCount: 30,
                         shrinkWrap: true,
+                        cacheExtent: 100,
+                        itemExtent: 150,
                         itemBuilder: (context, i) {
                           return GestureDetector(
                             onLongPress: () {
@@ -124,7 +130,91 @@ class _HomePageState extends State<HomePage>
 
                               showSnackbar(context);
                             },
-                            child: Container(),
+                            child: Neumorphic(
+                                margin: const EdgeInsets.all(8),
+                                style: NeumorphicStyle(
+                                    shape: NeumorphicShape.convex),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: Row(
+                                        children: <Widget>[
+                                          Expanded(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8),
+                                              child: Column(
+                                                children: <Widget>[
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: <Widget>[
+                                                      Text('title'),
+                                                      Text('status',
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                      .primaries[
+                                                                  Random().nextInt(Colors
+                                                                      .primaries
+                                                                      .length)])),
+                                                    ],
+                                                  ),
+                                                  Text(
+                                                      'dat ke fkweh wkeuh gluerhgl eruhglkuerhg kuhearl ghlearuhgaergluaehrguklah erla'),
+                                                  Row(
+                                                    children: <Widget>[
+                                                      Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: <Widget>[
+                                                          Row(
+                                                            children: <Widget>[
+                                                              Icon(Icons
+                                                                  .person_outline),
+                                                              SizedBox(
+                                                                width: 8,
+                                                              ),
+                                                              Text(
+                                                                  'Anonymous${Random().nextInt(100)}')
+                                                            ],
+                                                          ),
+                                                          Text(DateFormat(
+                                                                  'dd.MM.yyyy')
+                                                              .format(DateTime
+                                                                  .now())),
+                                                        ],
+                                                      )),
+                                                      IconButton(
+                                                          icon: Icon(
+                                                              Icons
+                                                                  .keyboard_arrow_down,
+                                                              color:
+                                                                  Colors.red),
+                                                          onPressed: null),
+                                                      IconButton(
+                                                          icon: Icon(
+                                                            Icons
+                                                                .keyboard_arrow_up,
+                                                            color: Colors
+                                                                .lightGreen,
+                                                          ),
+                                                          onPressed: null),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Image.network(
+                                              'https://picsum.photos/200/'),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                )),
                           );
                         }),
                   ],

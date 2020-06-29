@@ -12,12 +12,7 @@ class GoogleSignInService {
 
   GoogleSignInService({@required this.account}) {
     _googleSignIn = GoogleSignIn(
-      scopes: <String>[
-        'email',
-        "https://www.googleapis.com/auth/userinfo.profile",
-        'https://www.googleapis.com/auth/user.gender.read',
-        'https://www.googleapis.com/auth/user.birthday.read',
-      ],
+      scopes: <String>['email'],
     );
 
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {

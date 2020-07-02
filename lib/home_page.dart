@@ -6,6 +6,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:mer/google_sign_in_service.dart';
 import 'package:mer/new_request_page.dart';
 import 'package:mer/sign_in_page.dart';
@@ -23,6 +24,7 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
+    setLocale();
 
     super.initState();
   }
@@ -124,6 +126,7 @@ class _HomePageState extends State<HomePage>
                         cacheExtent: 100,
                         itemExtent: 150,
                         itemBuilder: (context, i) {
+
                           return GestureDetector(
                             onLongPress: () {
                               HapticFeedback.vibrate();
@@ -168,7 +171,9 @@ class _HomePageState extends State<HomePage>
                                                     children: <Widget>[
                                                       Expanded(
                                                           child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
                                                         children: <Widget>[
                                                           Row(
                                                             children: <Widget>[
@@ -181,10 +186,13 @@ class _HomePageState extends State<HomePage>
                                                                   'Anonymous${Random().nextInt(100)}')
                                                             ],
                                                           ),
-                                                          Text(DateFormat(
-                                                                  'dd.MM.yyyy')
-                                                              .format(DateTime
-                                                                  .now())),
+                                                          Text(Jiffy(
+                                                                  DateFormat(
+                                                                          "yyyy-MM-dd h:mm:ss")
+                                                                      .format(DateTime
+                                                                          .now().subtract(Duration(seconds: Random().nextInt(100000000)))),
+                                                                  "yyyy-MM-dd h:mm:ss")
+                                                              .fromNow()),
                                                         ],
                                                       )),
                                                       IconButton(
@@ -260,5 +268,10 @@ class _HomePageState extends State<HomePage>
         .then((reason) {
       if (reason != SnackBarClosedReason.action) {}
     });
+  }
+
+  void setLocale()async {
+    await Jiffy.locale("ru");
+
   }
 }

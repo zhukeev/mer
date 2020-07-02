@@ -37,6 +37,8 @@ dependencies:
   google_maps_flutter: ^0.5.28+1
   html: ^0.14.0+3
   pie_chart: ^3.1.1
+  timeago: ^2.0.26
+  jiffy: 3.0.1
 
 
 

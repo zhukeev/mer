@@ -39,63 +39,26 @@ class _PlacePickerPageState extends State<PlacePickerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: NeumorphicTheme.baseColor(context),
-      /* appBar: NeumorphicAppBar(
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.black),
         centerTitle: true,
-        title: Text('Заявка'),
-      ),*/
-      body: SafeArea(
-        child: Stack(
-          children: <Widget>[
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height - kToolbarHeight,
-                child: GoogleMap(
-                  mapType: MapType.hybrid,
-                  padding: const EdgeInsets.all(32),
-                  myLocationButtonEnabled: true,
-                  onTap: (latLng) => Navigator.of(context).pop(latLng),
-                  myLocationEnabled: true,
-                  initialCameraPosition: CameraPosition(
-                      target: latLng ?? LatLng(42.8767897, 74.4517753)),
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller.complete(controller);
-                  },
-                ),
-              ),
-            ),
-            SizedBox(
-              height: appbar.preferredSize.height * 1.2,
-              child: NeumorphicAppBar(
-                centerTitle: true,
-                color: Colors.transparent,
-                title: Text(
-                  'Выберите место',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
-          ],
-        ),
+        title: Text('Выберите место', style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+      ),
+
+      body: GoogleMap(
+        mapType: MapType.normal,
+        padding: const EdgeInsets.all(32),
+        myLocationButtonEnabled: true,
+        onTap: (latLng) => Navigator.of(context).pop(latLng),
+        myLocationEnabled: true,
+        initialCameraPosition: CameraPosition(
+            target: latLng ?? LatLng(42.8767897, 74.4517753),zoom: 15),
+        onMapCreated: (GoogleMapController controller) {
+          _controller.complete(controller);
+        },
       ),
     );
   }
 
-  void showSnackbar(BuildContext context) {
-    Scaffold.of(context)
-        .showSnackBar(SnackBar(
-          content: Text('Вы удалили уведомление'),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.blue,
-          action: SnackBarAction(
-              label: 'отмена'.toUpperCase(),
-              textColor: Colors.white,
-              onPressed: () {}),
-        ))
-        .closed
-        .then((reason) {
-      if (reason != SnackBarClosedReason.action) {}
-    });
-  }
 }

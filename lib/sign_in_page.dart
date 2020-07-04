@@ -15,6 +15,8 @@ import 'package:mer/sign_up_page.dart';
 import 'package:neumorphic/neumorphic.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+import 'menu_main_page.dart';
+
 class SignInPage extends StatefulWidget {
   @override
   _SignInPageState createState() => _SignInPageState();
@@ -41,7 +43,7 @@ class _SignInPageState extends State<SignInPage> {
     _googleSignInService = GoogleSignInService(account: (account) {
       if (account != null) {
         Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (_) => HomePage()));
+            .pushReplacement(MaterialPageRoute(builder: (_) => MainMenuPage()));
       }
     });
 
@@ -116,12 +118,26 @@ class _SignInPageState extends State<SignInPage> {
                 SizedBox(height: 8),
                 Align(
                   alignment: Alignment.topRight,
-                  child: FlatButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Забыли пароль?',
-                        style: TextStyle(decoration: TextDecoration.underline),
-                      )),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      FlatButton(
+                          onPressed: () {},
+                          child: Text(
+                            'Забыли пароль?',
+                            style: TextStyle(decoration: TextDecoration.underline),
+                          )),
+                      FlatButton(
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pushReplacement(MaterialPageRoute(builder: (_) => MainMenuPage()));
+                          },
+                          child: Text(
+                            'Войти анонимно',
+                            style: TextStyle(decoration: TextDecoration.underline),
+                          )),
+                    ],
+                  ),
                 ),
                 SizedBox(height: 8),
                 SizedBox(
@@ -143,14 +159,10 @@ class _SignInPageState extends State<SignInPage> {
   Align buildLogo() {
     return Align(
         alignment: const Alignment(0, -0.75),
-        child: Neumorphic(
-          drawSurfaceAboveChild: true,
-          padding: const EdgeInsets.all(8),
-          child: Hero(
-            tag: 'assets/images/bishkek.svg',
-            child: SvgPicture.asset('assets/images/bishkek.svg',
-                allowDrawingOutsideViewBox: true, height: 120),
-          ),
+        child: Hero(
+          tag: 'assets/images/bishkek.svg',
+          child: SvgPicture.asset('assets/images/bishkek.svg',
+              allowDrawingOutsideViewBox: true, height: 120),
         ));
   }
 

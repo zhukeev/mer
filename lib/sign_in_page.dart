@@ -9,6 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import "package:http/http.dart" as http;
+import 'package:mer/forgot_password_page.dart';
 import 'package:mer/google_sign_in_service.dart';
 import 'package:mer/home_page.dart';
 import 'package:mer/sign_up_page.dart';
@@ -46,8 +47,6 @@ class _SignInPageState extends State<SignInPage> {
             .pushReplacement(MaterialPageRoute(builder: (_) => MainMenuPage()));
       }
     });
-
-
   }
 
   @override
@@ -66,7 +65,7 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:  NeumorphicTheme.baseColor(context),
+      backgroundColor: NeumorphicTheme.baseColor(context),
       body: Stack(
         children: <Widget>[
           buildLogo(),
@@ -118,26 +117,14 @@ class _SignInPageState extends State<SignInPage> {
                 SizedBox(height: 8),
                 Align(
                   alignment: Alignment.topRight,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      FlatButton(
-                          onPressed: () {},
-                          child: Text(
-                            'Забыли пароль?',
-                            style: TextStyle(decoration: TextDecoration.underline),
-                          )),
-                      FlatButton(
-                          onPressed: () {
-                            Navigator.of(context)
-                                .pushReplacement(MaterialPageRoute(builder: (_) => MainMenuPage()));
-                          },
-                          child: Text(
-                            'Войти анонимно',
-                            style: TextStyle(decoration: TextDecoration.underline),
-                          )),
-                    ],
-                  ),
+                  child: FlatButton(
+                      onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) => ForgotPasswordPage())),
+                      child: Text(
+                        'Забыли пароль?',
+                        style: TextStyle(decoration: TextDecoration.underline),
+                      )),
                 ),
                 SizedBox(height: 8),
                 SizedBox(
@@ -234,7 +221,6 @@ class _SignInPageState extends State<SignInPage> {
           ],
         ));
   }
-
 
   Future<void> _handleAppleSignIn() async {
     try {

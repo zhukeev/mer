@@ -105,12 +105,6 @@ class _StatisticPageState extends State<StatisticPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: NeumorphicTheme.baseColor(context),
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.black),
-        centerTitle: true,
-        title: Text('Заявка', style: TextStyle(color: Colors.black)),
-        backgroundColor: Colors.white,
-      ),
       body: Stack(
         children: <Widget>[
           Positioned(

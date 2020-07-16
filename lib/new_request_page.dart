@@ -68,7 +68,7 @@ class _NewRequestPageState extends State<NewRequestPage> {
         appBar: AppBar(
           iconTheme: IconThemeData(color: Colors.black),
           centerTitle: true,
-          title: Text('Заявка', style: TextStyle(color: Colors.black)),
+          title: Text('Новая Заявка', style: TextStyle(color: Colors.black)),
           backgroundColor: Colors.white,
         ),
         body: SingleChildScrollView(
@@ -186,21 +186,24 @@ class _NewRequestPageState extends State<NewRequestPage> {
                     },
                     child: Container(
 //                      color: Color(0xFF363636),
-                    padding: const EdgeInsets.all(4),
+//                    padding: const EdgeInsets.all(4),
+                      margin: EdgeInsets.fromLTRB(isOdd ? 0 : 8, 8, 0, 0),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
                           color: Colors.white,
+                          image: _images.containsKey(index)
+                              ? DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: FileImage(_images[index]))
+                              : null,
                           boxShadow: [
                             BoxShadow(
                                 color: Colors.grey.withOpacity(0.3),
                                 spreadRadius: 1,
                                 blurRadius: 1),
                           ]),
-                      child: _images.containsKey(index)
-                          ? Image.file(
-                              _images[index],
-                              fit: BoxFit.cover,
-                            )
+                       child: _images.containsKey(index)
+                          ? null
                           : Center(
                               child: Icon(_images.values.length == index
                                   ? Icons.add
@@ -230,22 +233,6 @@ class _NewRequestPageState extends State<NewRequestPage> {
     );
   }
 
-  void showSnackbar(BuildContext context) {
-    Scaffold.of(context)
-        .showSnackBar(SnackBar(
-          content: Text('Вы удалили уведомление'),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.blue,
-          action: SnackBarAction(
-              label: 'отмена'.toUpperCase(),
-              textColor: Colors.white,
-              onPressed: () {}),
-        ))
-        .closed
-        .then((reason) {
-      if (reason != SnackBarClosedReason.action) {}
-    });
-  }
 
   Future<File> getImage() async {
     final picker = ImagePicker();

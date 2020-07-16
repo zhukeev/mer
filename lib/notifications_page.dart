@@ -37,6 +37,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       body: Padding(
         padding: const EdgeInsets.only(top: 16.0 + 10),
         child: ListView.builder(
@@ -91,7 +92,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Flexible(
-                                          child: Text(asds[i % asds.length]),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                            child: Text(asds[i % asds.length]),
+                                          ),
                                         ),
                                         Text(
                                           DateFormat("dd/MM/yyyy h:mm").format(

@@ -7,6 +7,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:mer/request_details_page.dart';
 
 enum RequestStatus { New, InProgress, Completed, Canceled, ReadyToFinish }
 
@@ -49,84 +50,83 @@ class _HomePageState extends State<HomePage>
                     padding: const EdgeInsets.all(0),
                     itemExtent: 150,
                     itemBuilder: (context, i) {
-                      return Container(
-                          margin: EdgeInsets.all(8),
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
+                      return GestureDetector(
+                        onTap: (){
+                          Navigator.of(context).push(MaterialPageRoute(builder: (_)=>RequestDetailsPage(null)));
+                        },
+                        child: Container(
+                            margin: EdgeInsets.all(8),
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
 //                                border: Border.all(color: Colors.grey),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.3),
-                                  spreadRadius: 1,
-                                  blurRadius: 1,
-                                ),
-                              ],
-                              borderRadius: BorderRadius.circular(5)),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Expanded(
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 8),
-                                        child: Column(
-                                          children: <Widget>[
-                                            Flexible(
-                                              child: new Text(
-                                                'Text largeeeeeeeeeeda sfgwjEGFKW jwge JFGEWFYWg kfyugw ugyfuwfukywg fukwygeukfgwuGFKUWyg jyeg jkfgweJFYGWjeygf kjwyeg kyf gwUYEF Kweg  gweifgweyg ufgweeeeeeeeeeeee asdg fkyg skyfg kjwesygf kuwyeg ',
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 3,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.3),
+                                    spreadRadius: 1,
+                                    blurRadius: 1,
+                                  ),
+                                ],
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Expanded(
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 8),
+                                          child: Column(
+                                            children: <Widget>[
+                                              Flexible(
+                                                child: new Text(
+                                                  'Text largeeeeeeeeeeda sfgwjEGFKW jwge JFGEWFYWg kfyugw ugyfuwfukywg fukwygeukfgwuGFKUWyg jyeg jkfgweJFYGWjeygf kjwyeg kyf gwUYEF Kweg  gweifgweyg ufgweeeeeeeeeeeee asdg fkyg skyfg kjwesygf kuwyeg ',
+                                                  overflow: TextOverflow.ellipsis,
+                                                  maxLines: 3,
+                                                ),
                                               ),
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[],
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(5),
-                                      child: CachedNetworkImage(
-                                          height: 80,
-                                          imageUrl:
-                                              'https://picsum.photos/200/'),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: <Widget>[
-                                  Expanded(
-                                      child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text(
-                                        DateFormat("dd/MM/yyyy h:mm").format(
-                                            DateTime.now().subtract(Duration(
-                                                seconds: Random()
-                                                    .nextInt(100000000)))),
-                                        style: TextStyle(color: Colors.grey),
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(5),
+                                        child: CachedNetworkImage(
+                                            height: 80,
+                                            imageUrl:
+                                                'https://picsum.photos/200/'),
                                       ),
                                     ],
-                                  )),
-                                  buildStatus(RequestStatus.values[Random()
-                                      .nextInt(RequestStatus.values.length)]),
-                                ],
-                              ),
-                            ],
-                          ));
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: <Widget>[
+                                    Expanded(
+                                        child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          DateFormat("dd/MM/yyyy h:mm").format(
+                                              DateTime.now().subtract(Duration(
+                                                  seconds: Random()
+                                                      .nextInt(100000000)))),
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                      ],
+                                    )),
+                                    buildStatus(RequestStatus.values[Random()
+                                        .nextInt(RequestStatus.values.length)]),
+                                  ],
+                                ),
+                              ],
+                            )),
+                      );
                     }),
                 ListView.builder(
                     itemCount: 30,

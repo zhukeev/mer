@@ -60,24 +60,22 @@ class _NewRequestPageState extends State<NewRequestPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: NeumorphicColors.background,
-      appBar: NeumorphicAppBar(
-        buttonStyle: NeumorphicStyle(
-            shape: NeumorphicShape.convex
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(new FocusNode());
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          iconTheme: IconThemeData(color: Colors.black),
+          centerTitle: true,
+          title: Text('Новая Заявка', style: TextStyle(color: Colors.black)),
+          backgroundColor: Colors.white,
         ),
-        centerTitle: true,
-        title: Text('Заявка'),
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.only(bottom: 16),
+        body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              Neumorphic(
-                margin: const EdgeInsets.only(bottom: 8, right: 16, left: 16),
-                padding: const EdgeInsets.all(8),
-                style: NeumorphicStyle(shape: NeumorphicShape.convex),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: TextFormField(
                   controller: descriptionTEC,
                   textInputAction: TextInputAction.next,
@@ -90,10 +88,8 @@ class _NewRequestPageState extends State<NewRequestPage> {
                 ),
               ),
               SizedBox(height: 8),
-              Neumorphic(
-                margin: const EdgeInsets.only(bottom: 8, right: 16, left: 16),
-                padding: const EdgeInsets.all(8),
-                style: NeumorphicStyle(shape: NeumorphicShape.convex),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Stack(
                   children: <Widget>[
                     TextFormField(
@@ -117,33 +113,36 @@ class _NewRequestPageState extends State<NewRequestPage> {
                             FocusScope.of(context)
                                 .requestFocus(new FocusNode());
 
+                            await _location();
+
                             final place = await Navigator.of(context)
                                 .push(MaterialPageRoute(
                                     builder: (_) => PlacePickerPage(
-                                          latLng: LatLng(
-                                              _locationData?.latitude,
-                                              _locationData?.longitude),
+                                          latLng: _locationData != null
+                                              ? LatLng(_locationData?.latitude,
+                                                  _locationData?.longitude)
+                                              : null,
                                         )));
                             if (place != null && place is LatLng) {
                               /*
                               * {
-    "place_id": "127439665",
-    "licence": "https://locationiq.com/attribution",
-    "osm_type": "way",
-    "osm_id": "177297807",
-    "lat": "42.8941236",
-    "lon": "74.58152355",
-    "display_name": "109, Осипенко улица, Газ городок, Бишкек, 720004, Киргизия",
-    "address": {
-        "house_number": "109",
-        "road": "Осипенко улица",
-        "suburb": "Газ городок",
-        "city": "Бишкек",
-        "postcode": "720004",
-        "country": "Киргизия",
-        "country_code": "kg"
-    },
-    "boundingbox": ["42.8940766", "42.8941706", "74.581463", "74.5815841"]
+      "place_id": "127439665",
+      "licence": "https://locationiq.com/attribution",
+      "osm_type": "way",
+      "osm_id": "177297807",
+      "lat": "42.8941236",
+      "lon": "74.58152355",
+      "display_name": "109, Осипенко улица, Газ городок, Бишкек, 720004, Киргизия",
+      "address": {
+          "house_number": "109",
+          "road": "Осипенко улица",
+          "suburb": "Газ городок",
+          "city": "Бишкек",
+          "postcode": "720004",
+          "country": "Киргизия",
+          "country_code": "kg"
+      },
+      "boundingbox": ["42.8940766", "42.8941706", "74.581463", "74.5815841"]
 }
                               * */
 
@@ -165,12 +164,18 @@ class _NewRequestPageState extends State<NewRequestPage> {
               ),
               SizedBox(height: 8),
               GridView.builder(
-                itemCount: 4,
+                itemCount:
+                    _images.values.length < 4 ? _images.values.length + 1 : 4,
                 shrinkWrap: true,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 physics: NeverScrollableScrollPhysics(),
                 itemBuilder: (BuildContext context, int index) {
                   final isOdd = index % 2 == 0;
+
+                  print("index $index");
+                  print(_images.values.length);
+
                   return GestureDetector(
                     onTap: () async {
                       final f = await getImage();
@@ -179,21 +184,30 @@ class _NewRequestPageState extends State<NewRequestPage> {
                         setState(() {});
                       }
                     },
-                    child: Neumorphic(
-                      style: NeumorphicStyle(
-                        shape: NeumorphicShape.convex
-                      ),
-                      margin: EdgeInsets.only(
-                          left: isOdd ? 0 : 4, right: isOdd ? 4 : 0, bottom: 8),
-                      child: Container(
+                    child: Container(
 //                      color: Color(0xFF363636),
-                        child: _images.containsKey(index)
-                            ? Image.file(
-                                _images[index],
-                                fit: BoxFit.cover,
-                              )
-                            : Center(child: Icon(Icons.photo)),
-                      ),
+//                    padding: const EdgeInsets.all(4),
+                      margin: EdgeInsets.fromLTRB(isOdd ? 0 : 8, 8, 0, 0),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.white,
+                          image: _images.containsKey(index)
+                              ? DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: FileImage(_images[index]))
+                              : null,
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 1,
+                                blurRadius: 1),
+                          ]),
+                       child: _images.containsKey(index)
+                          ? null
+                          : Center(
+                              child: Icon(_images.values.length == index
+                                  ? Icons.add
+                                  : Icons.photo)),
                     ),
                   );
                 },
@@ -201,20 +215,17 @@ class _NewRequestPageState extends State<NewRequestPage> {
                     crossAxisCount: 2),
               ),
               SizedBox(height: 16),
-              SizedBox(
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 width: double.maxFinite,
                 height: 56,
-                child: NeumorphicButton(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  style: NeumorphicStyle(
-                      shape: NeumorphicShape.convex
-                  ),
-                  child: Center(
-                    child: Text('Отправить', textAlign: TextAlign.center),
-                  ),
+                child: OutlineButton(
                   onPressed: () {},
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Text('Отправить', textAlign: TextAlign.center),
                 ),
-              ),
+              )
             ],
           ),
         ),
@@ -222,22 +233,6 @@ class _NewRequestPageState extends State<NewRequestPage> {
     );
   }
 
-  void showSnackbar(BuildContext context) {
-    Scaffold.of(context)
-        .showSnackBar(SnackBar(
-          content: Text('Вы удалили уведомление'),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.blue,
-          action: SnackBarAction(
-              label: 'отмена'.toUpperCase(),
-              textColor: Colors.white,
-              onPressed: () {}),
-        ))
-        .closed
-        .then((reason) {
-      if (reason != SnackBarClosedReason.action) {}
-    });
-  }
 
   Future<File> getImage() async {
     final picker = ImagePicker();

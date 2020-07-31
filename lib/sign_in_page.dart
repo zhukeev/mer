@@ -9,11 +9,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import "package:http/http.dart" as http;
+import 'package:mer/forgot_password_page.dart';
 import 'package:mer/google_sign_in_service.dart';
 import 'package:mer/home_page.dart';
 import 'package:mer/sign_up_page.dart';
 import 'package:neumorphic/neumorphic.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+
+import 'menu_main_page.dart';
 
 class SignInPage extends StatefulWidget {
   @override
@@ -41,11 +44,9 @@ class _SignInPageState extends State<SignInPage> {
     _googleSignInService = GoogleSignInService(account: (account) {
       if (account != null) {
         Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (_) => HomePage()));
+            .pushReplacement(MaterialPageRoute(builder: (_) => MainMenuPage()));
       }
     });
-
-
   }
 
   @override
@@ -64,7 +65,7 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:  NeumorphicTheme.baseColor(context),
+      backgroundColor: NeumorphicTheme.baseColor(context),
       body: Stack(
         children: <Widget>[
           buildLogo(),
@@ -117,7 +118,9 @@ class _SignInPageState extends State<SignInPage> {
                 Align(
                   alignment: Alignment.topRight,
                   child: FlatButton(
-                      onPressed: () {},
+                      onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) => ForgotPasswordPage())),
                       child: Text(
                         'Забыли пароль?',
                         style: TextStyle(decoration: TextDecoration.underline),
@@ -143,14 +146,10 @@ class _SignInPageState extends State<SignInPage> {
   Align buildLogo() {
     return Align(
         alignment: const Alignment(0, -0.75),
-        child: Neumorphic(
-          drawSurfaceAboveChild: true,
-          padding: const EdgeInsets.all(8),
-          child: Hero(
-            tag: 'assets/images/bishkek.svg',
-            child: SvgPicture.asset('assets/images/bishkek.svg',
-                allowDrawingOutsideViewBox: true, height: 120),
-          ),
+        child: Hero(
+          tag: 'assets/images/bishkek.svg',
+          child: SvgPicture.asset('assets/images/bishkek.svg',
+              allowDrawingOutsideViewBox: true, height: 120),
         ));
   }
 
@@ -222,7 +221,6 @@ class _SignInPageState extends State<SignInPage> {
           ],
         ));
   }
-
 
   Future<void> _handleAppleSignIn() async {
     try {

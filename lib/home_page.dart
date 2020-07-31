@@ -25,7 +25,6 @@ class _HomePageState extends State<HomePage>
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
     setLocale();
-
     super.initState();
   }
 
